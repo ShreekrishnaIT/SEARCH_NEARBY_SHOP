@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ALL_IN_ONE_COUPON</title><!--ページのタイトルを設定-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>店舗一覧</h1><!--ページ内に表示される見出し-->
+    <div id="error-message"></div> <!--エラーメッセージを表示するための空の<div>要素-->
+    <form method="post" onsubmit="return findShops(event)"><!--フォームの開始（データを送信するためのフォーム）-->
+        <label for="radius">検索半径（メートル）:</label> <!--ラベルの表示-->
+            <input type="number" id="radius" value="1000" min="100" max="5000" step="100"> <!--数値を入力するための<input>要素-->
+        
+        <!-- Add the category select dropdown -->
+        <label for="shoptype">Select a shoptype:</label> <!--ラベルの表示-->
+        <select id="shoptype" name="shoptype"> <!--プルダウンメニューを作成するための<select>要素-->
+            <option value="all">All Categories</option>
+            <option value="grocery_or_supermarket">supermarket</option>
+            <option value="hospital">Hospital</option>
+            <option value="restaurant">Restaurant</option>
+            <!-- Add more categories as needed -->
+        </select>
+        
+        <input type="submit" value="位置情報取得許可"> <!--位置情報取得の許可を求めるための送信ボタン-->
+
+        <h2>Your Current Location:</h2>
+        <!--<span id="latitude"></span></p>
+        <span id="longitude"></span></p> -->
+
+        <!-- Add the element to display the address -->
+        <p id="address"></p>
+    </form>
+
+
+    <script>
+        function findShops(event) { //findShopsという名前の関数を定義し、引数としてeventオブジェクトを受け取る
+            event.preventDefault(); //デフォルトのイベントをキャンセルする（フォームの送信など）
+            if (navigator.geolocation) { //ブラウザが位置情報をサポートしているかをチェック
+                navigator.geolocation.getCurrentPosition( //現在の位置情報を取得する非同期関数を呼び出す
+                    function(position) { //成功時のコールバック関数を定義し、位置情報を引数として受け取る
+                        const latitude = position.coords.latitude; //緯度を取得して変数latitudeに格納
+                        const longitude = position.coords.longitude; //経度を取得して変数longitudeに格納
+                        const radius = document.getElementById("radius").value; //IDが"radius"の要素の値を取得して変数radiusに格納
+                        const shoptype = document.getElementById("shoptype").value; //IDが"shoptype"の要素の値を取得して変数shoptypeに格納
+
+                        // Display the latitude and longitude on the page
+                        //document.getElementById("latitude").innerText = latitude;
+                        //document.getElementById("longitude").innerText = longitude;
+
+                        // Reverse geocoding - Convert coordinates to address
+                        var url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`; //
+                        fetch(url)
+                            .then(response => response.json()) //レスポンスをJSON形式に変換
+                            .then(data => { //成功時のコールバック関数を定義し、JSONデータを引数として受け取る
+                                if (data.address) { //取得したデータにaddressプロパティがある場合（住所情報が存在する場合）
+                                    // Get address information and display it in HTML
+                                    var address = getAddressFromData(data.address); //IDが"address"の要素を取得し、住所情報を表示するためにinnerHTMLを設定
+                                    var addressElement = document.getElementById("address");
+                                    addressElement.innerHTML = "Address: " + address; //住所情報が取得されたので、IDが"address"の要素を表示する（display: block）
+                                    addressElement.style.display = "block"; //"Shop List"ボタンを表示する（住所が取得されたときに表示されるボタン）
+                                    // Show "Shop List" button when the address is obtained
+                                    document.getElementById("shopsButton").style.display = "block";
+                                } else { //取得したデータにaddressプロパティがない場合（住所情報が見つからない場合）
+                                    console.log("No search results found."); //コンソールにメッセージを出力
+                                }
+                            })
+                            .catch(error => { //fetchやJSON変換などの処理でエラーが発生した場合
+                                console.log("Reverse geocoding failed. Reason: " + error); //コンソールにエラーメッセージを出力
+                            });
+
+                        // Send the data to the server using a POST request (if needed)
+                        fetch("/", { //ルートパス（サーバー上のルートディレクトリ）にPOSTリクエストを送信
+                            method: "POST", //メソッドはPOST
+                            headers: {
+                                "Content-Type": "application/json" //リクエストヘッダーにJSON形式でデータを送信
+                            },
+                            body: JSON.stringify({ radius: radius, latitude: latitude, longitude: longitude, shoptype: shoptype })  // リクエストヘッダーにJSON形式でデータを送信
+                        }) //リクエストボディには、半径、緯度、経度、およびショップタイプのデータが含まれる
+                        .then(response => response.text()) //レスポンスをテキスト形式に変換
+                        .then(data => { //成功時のコールバック関数を定義し、テキストデータを引数として受け取る
+                            document.body.innerHTML = data; //レスポンスデータをページのボディ部分に表示
+                        })
+                        .catch(error => { //レスポンスデータをページのボディ部分に表示
+                            console.error("Error while fetching data:", error); //レスポンスデータをページのボディ部分に表示
+                        });
+                    },
+                    function(error) { //位置情報の取得に失敗した場合のコールバック関数を定義
+                        const errorMessage = "Failed to get current location: " + error.message; //エラーメッセージを作成
+                        document.getElementById("error-message").innerText = errorMessage;
+                    }
+                );
+            } else {
+                document.getElementById("error-message").innerText = "Geolocation is not supported by your browser.";
+            }
+        }
+
+        function getAddressFromData(addressData) { //reverse geocodingデータから住所を生成する関数を定義し、引数としてaddressDataを受け取る
+            var address = ""; //住所を格納するための変数を初期化
+            if (addressData.postcode) address += "〒" + addressData.postcode; //郵便番号がある場合は、住所に郵便番号を追加
+            if (addressData.road) address += ", " + addressData.road; //郵便番号がある場合は、住所に郵便番号を追加
+            if (addressData.house_number) address += ", " + addressData.house_number; //郵便番号がある場合は、住所に郵便番号を追加
+            if (addressData.neighbourhood) address += ", " + addressData.neighbourhood; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.suburb) address += ", " + addressData.suburb; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.town) address += ", " + addressData.town; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.city) address += ", " + addressData.city; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.village) address += ", " + addressData.village; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.subdivision) address += ", " + addressData.subdivision; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.state) address += ", " + addressData.state; //隣接地域がある場合は、住所に隣接地域を追加
+            if (addressData.country) address += ", " + addressData.country; //国がある場合は、住所に国を追加
+            return address;
+        }
+
+        function showShops() {
+            console.log("Show shop list button clicked.");
+        }
+    </script>
+</body>
+</html>

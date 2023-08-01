@@ -1,0 +1,168 @@
+/* style.css */
+
+/* Global styles for the entire page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Styles for the main heading */
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #007bff; /* Blue color for the heading */
+}
+
+/* Styles for the unordered list container */
+ul {
+    max-height: 500px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Styles for each list item in the unordered list */
+li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Styles for the last list item in the unordered list */
+li:last-child {
+    margin-bottom: 0;
+}
+
+/* Styles for hyperlinks */
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* Styles for hyperlinks on hover */
+a:hover {
+    text-decoration: underline;
+}
+
+/* Reset default browser styles for specific elements */
+h2, p, form, label, input, select {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Additional global styles */
+h2 {
+    margin-top: 30px;
+    color: #007bff;
+}
+
+/* Styles for the form container */
+form {
+    max-width: 399px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 10px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(1, 1, 0, 0.1); /* Add a subtle box shadow */
+}
+
+/* Styles for form labels */
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Styles for input fields and select dropdown */
+input[type="number"],
+select {
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Styles for the submit button */
+input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease; /* Add a smooth transition on hover */
+}
+
+/* Styles for the submit button on hover */
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Styles for the error message */
+#error-message {
+    color: #ff0000;
+    margin-top: 10px;
+}
+
+/* Styles for latitude and longitude elements */
+#latitude, #longitude {
+    font-weight: bold;
+}
+
+/* Styles for the results container */
+.results {
+    position: center; /* Set the container to position absolute */
+    top: 10;
+    left: 10;
+    right: 10;
+    bottom: 10;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds the viewport height */
+    box-shadow: 0 0 20px rgba(1, 2, 2, 0.2); /* Add a subtle box shadow */
+}
+
+/* Styles for the shops container */
+.shops-container {
+    max-height: calc(100% - 160px); /* Adjust the max-height to fit the remaining space */
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+/* Styles for each shop item */
+.shop {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(2, 2, 2, 0.2); /* Add a box shadow to each shop item */
+    transition: box-shadow 0.3s ease; /* Add a smooth transition on hover */
+}
+
+/* Styles for the last shop item */
+.shop:last-child {
+    margin-bottom: 0;
+}
+
+/* Styles for paragraphs inside shop items */
+.shop p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Add any additional styles for the results page as needed */

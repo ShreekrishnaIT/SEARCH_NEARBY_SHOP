@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop Locator - Results</title> <!--タイトルの設定-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> <!--CSSファイルのリンクを追加-->
+</head>
+<body>
+    <h1>周辺ショップ</h1> <!--見出しを表示-->
+    {% if category %}
+        <p>Category: {{ category }}</p> <!--カテゴリがあれば、そのカテゴリ名を表示-->
+    {% endif %}
+    
+    {% if shops %}
+        <ul> <!--ショップのリストを作成-->
+        {% for shop in shops %}
+            <li>
+                <a href="{{ shop.url }}" target="_blank">{{ shop.name }}</a>
+                <br>
+                <p>Address: <a href="https://www.google.com/maps/search/{{ shop.name }}" target="_blank">{{ shop.address }}</a></p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No nearby shops found.</p> <!--周辺のショップが見つからない場合、メッセージを表示-->
+    {% endif %}
+    
+    <p><a href="/">Back to Search</a></p> <!--「検索に戻る」へのリンクを表示-->
+</body>
+</html>
