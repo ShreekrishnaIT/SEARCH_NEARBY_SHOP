@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__) #Flaskアプリケーションのインスタンスを生成
 
-api_key = 'AIzaSyDnayTrEZND71qisosLhuquBPHUMAvE2Hw' #Google Maps Places APIのAPIキーを設定(入力してください)
+api_key = '' #Google Maps Places APIのAPIキーを設定(入力してください)
 
 def get_nearby_places(latitude, longitude, radius):
     url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json' ##Google Maps Places APIのエンドポイントを指定
